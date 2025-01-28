@@ -8,10 +8,16 @@ const io = socketIo(server);
 
 app.use(express.static('public'));
 
+let messages = [];
+
 io.on('connection', (socket) => {
     console.log('New client connected');
 
+    // Send existing messages to the new client
+    socket.emit('loadMessages', messages);
+
     socket.on('sendMessage', (message) => {
+        messages.push(message);
         io.emit('receiveMessage', message);
     });
 
